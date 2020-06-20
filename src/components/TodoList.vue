@@ -1,33 +1,38 @@
 <template>
     <div class="todo">
         <input 
-        type="text" 
-        class="todo__input" 
-        placeholder="введите задачу"
-        v-model="newTodo"
-        @keyup.enter="addTodo" 
+            type="text" 
+            class="todo__input" 
+            placeholder="введите задачу"
+            v-model="newTodo"
+            @keyup.enter="addTodo" 
         >
         <div v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
             <div class="todo__item__left">
+                <input 
+                    type="checkbox" 
+                    v-model="todo.completed"
+                >
                 <div
-                v-if="!todo.editing" 
-                @dblclick="editTodo(todo)"
-                class="todo__item__left--label"
+                    v-if="!todo.editing" 
+                    @dblclick="editTodo(todo)"
+                    class="todo__item__left--label"
+                    :class="{completed : todo.completed}"
                 >{{todo.title}}</div>
                 <input 
-                v-else
-                v-focus
-                type="text" 
-                v-model="todo.title"
-                @blur="doneEdit(todo)"
-                @keyup.enter="doneEdit(todo)"
-                @keyup.esc="cancelEdit(todo)"
-                class="todo__item__left--edit"
+                    v-else
+                    v-focus
+                    type="text" 
+                    v-model="todo.title"
+                    @blur="doneEdit(todo)"
+                    @keyup.enter="doneEdit(todo)"
+                    @keyup.esc="cancelEdit(todo)"
+                    class="todo__item__left--edit"
                 >  
             </div>
             <div 
-            class="todo__item__remove"
-            @click="removeTodo(index)"
+                class="todo__item__remove"
+                @click="removeTodo(index)"
             >&times;</div>
         </div>
     </div>
@@ -39,7 +44,7 @@
         data() {
             return {
                 newTodo: '',
-                idForTodo: 3,
+                idForTodo: 3, //хардкодим чтобы начинать отсчет от этой цифры
                 beforeEditCache: '',
                 todos: [
                     {
@@ -57,7 +62,7 @@
                 ]
             }
         },
-        directives: {  // чтобы инпут сразу фокусился после даб клика
+        directives: {  // чтобы инпут сразу фокусился после даблклика
             focus: {
                 inserted: function(el){
                     el.focus()
@@ -82,6 +87,9 @@
                 todo.editing = true  // меняем состояние на тру
             },
             doneEdit(todo){
+                if(todo.title.trim() == ''){ // делаем проверку чтобы при изменении не сохранялась пустая строка
+                    todo.title = this.beforeEditCache
+                }
                 todo.editing = false // убираем блюр по клику или ентеру
             },
             cancelEdit(todo){    // отменяем изменения по esc
@@ -106,9 +114,12 @@
             margin: 10px 0;
             &__left {
                 width: 100%;
+                display: flex;
+                align-items: center;
                 &--label {
                     flex: 1;
                     font-size: 24px;
+                    padding-left: 10px;
                 }
                 &--edit {
                     width: 100%;
@@ -126,5 +137,9 @@
                 }
             }
         }
+    }
+
+    .completed {
+        text-decoration: line-through;
     }
 </style>
