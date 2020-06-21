@@ -35,6 +35,18 @@
                 @click="removeTodo(index)"
             >&times;</div>
         </div>
+        <hr>
+        <div class="todo__extra">
+            <label for="checkall">
+                <input 
+                    type="checkbox" 
+                    id="checkall" 
+                    :checked="!anyRemaining"
+                    @change="checkAllTodos"
+                >Check All
+            </label>
+            <div> {{remaining}} items left</div>
+        </div>
     </div>
 </template>
 
@@ -60,6 +72,14 @@
                         editing: false, // чтобы спрятать инпут по условию
                     }
                 ]
+            }
+        },
+        computed: { // всегда чтото возвращает, не мутируем
+            remaining(){
+                return this.todos.filter( todo => !todo.completed).length
+            },
+            anyRemaining(){ // если все чекбоксы выбраны то и checkall выбран
+                return this.remaining != 0
             }
         },
         directives: {  // чтобы инпут сразу фокусился после даблклика
@@ -98,6 +118,9 @@
             },
             removeTodo(index) {
                 this.todos.splice(index, 1)  // удаляем по индексу
+            },
+            checkAllTodos(){ // делает все туду сделаными
+                this.todos.forEach((todo) => todo.completed = event.target.checked)
             }
         }
     }
@@ -136,6 +159,11 @@
                     color: red;
                 }
             }
+        }
+        &__extra {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     }
 
