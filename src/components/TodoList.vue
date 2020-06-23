@@ -7,7 +7,7 @@
             v-model="newTodo"
             @keyup.enter="addTodo" 
         >
-        <div v-for="(todo, index) in todos" :key="todo.id" class="todo__item">
+        <div v-for="(todo, index) in todosFiltered" :key="todo.id" class="todo__item">
             <div class="todo__item__left">
                 <input 
                     type="checkbox" 
@@ -47,6 +47,13 @@
             </label>
             <div> {{remaining}} items left</div>
         </div>
+        <div class="todo__extra">
+            <button :class="{active : filter == 'all'}" @click="filter ='all'">All</button>
+            <button :class="{active: filter == 'active'}" @click="filter ='active'">Active</button>
+            <button :class="{active: filter == 'completed'}" @click="filter ='completed'">Completed</button>
+            <button v-show="showClearCompletedButton" @click="clearCompleted">Clear Completed</button>
+
+        </div>
     </div>
 </template>
 
@@ -58,6 +65,7 @@
                 newTodo: '',
                 idForTodo: 3, //хардкодим чтобы начинать отсчет от этой цифры
                 beforeEditCache: '',
+                filter: 'all',
                 todos: [
                     {
                         'id': 1,
@@ -80,7 +88,21 @@
             },
             anyRemaining(){ // если все чекбоксы выбраны то и checkall выбран
                 return this.remaining != 0
+            },
+            todosFiltered(){
+                if(this.filter == 'all'){
+                    return this.todos
+                }else if(this.filter == 'active'){
+                   return this.todos.filter(todo => !todo.completed)
+                }else if(this.filter == 'completed'){
+                   return this.todos.filter(todo => todo.completed)
+                }
+                return this.todos
+            },
+            showClearCompletedButton(){
+               return this.todos.filter(todo => todo.completed).length >0 // если есть хоть 1 завершеннач задача т опоявится эта кнопка
             }
+            
         },
         directives: {  // чтобы инпут сразу фокусился после даблклика
             focus: {
@@ -121,6 +143,9 @@
             },
             checkAllTodos(){ // делает все туду сделаными
                 this.todos.forEach((todo) => todo.completed = event.target.checked)
+            },
+            clearCompleted(){
+                this.todos = this.todos.filter(todo => !todo.completed)
             }
         }
     }
@@ -169,5 +194,11 @@
 
     .completed {
         text-decoration: line-through;
+    }
+
+    .active {
+        background: green;
+        outline: none;
+        border: 0px;
     }
 </style>
