@@ -7,7 +7,7 @@
             v-model="newTodo"
             @keyup.enter="addTodo" 
         >
-        <TodoItem v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index">
+        <TodoItem v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" @removedTodo="removeTodo">
             
         </TodoItem>
         <hr>

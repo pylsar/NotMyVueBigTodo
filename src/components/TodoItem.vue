@@ -3,22 +3,22 @@
         <div class="todo__item__left">
             <input 
                 type="checkbox" 
-                v-model="todo.completed"
+                v-model="completed"
             >
             <div
-                v-if="!todo.editing" 
-                @dblclick="editTodo(todo)"
+                v-if="!editing" 
+                @dblclick="editTodo"
                 class="todo__item__left--label"
-                :class="{completed : todo.completed}"
-            >{{todo.title}}</div>
+                :class="{completed : completed}"
+            >{{title}}</div>
             <input 
                 v-else
                 v-focus
                 type="text" 
-                v-model="todo.title"
-                @blur="doneEdit(todo)"
-                @keyup.enter="doneEdit(todo)"
-                @keyup.esc="cancelEdit(todo)"
+                v-model="title"
+                @blur="doneEdit"
+                @keyup.enter="doneEdit"
+                @keyup.esc="cancelEdit"
                 class="todo__item__left--edit"
             >  
         </div>
@@ -40,6 +40,20 @@ export default {
         index: {
             type: Number,
             required: true,
+        }
+    },
+    data(){
+        return {
+            'id': this.todo.id,
+            'title': this.todo.title,
+            'completed': this.todo.completed,
+            'editing': this.todo.editing,
+            'beforeEditCache': ''
+        }
+    },
+    methods: {
+        removeTodo(index){ // передадим родителю так как у нас больше нет доступа к массиву todo, а у родителчя есть
+            this.$emit('removedTodo', index) // необходимо в родителе(в теге TodoItem) обозначить @removedTodo="removeTodo"
         }
     }
 }
