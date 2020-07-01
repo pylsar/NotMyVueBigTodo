@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    near 11 50
+    19 18
     <TodoList/>
   </div>
 </template>

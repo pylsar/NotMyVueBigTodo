@@ -7,7 +7,7 @@
             v-model="newTodo"
             @keyup.enter="addTodo" 
         >
-        <TodoItem v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" @removedTodo="removeTodo">
+        <TodoItem v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" @removedTodo="removeTodo" @finishedEdit="finishedEdit">
             
         </TodoItem>
         <hr>
@@ -129,6 +129,9 @@
             },
             clearCompleted(){
                 this.todos = this.todos.filter(todo => !todo.completed)
+            },
+            finishedEdit(data){ // data берется из todoitem объект
+                this.todos.splice(data.index, 1, data.todo)
             }
         }
     }

@@ -54,7 +54,30 @@ export default {
     methods: {
         removeTodo(index){ // передадим родителю так как у нас больше нет доступа к массиву todo, а у родителчя есть
             this.$emit('removedTodo', index) // необходимо в родителе(в теге TodoItem) обозначить @removedTodo="removeTodo"
-        }
+        },
+        editTodo() {
+            this.beforeEditCache = this.title // берется из todolist, так как у нас локально теперь то вместо todo. пишем this.
+            this.editing = true  // берется из todolist, так как у нас локально теперь то вместо todo. пишем this.
+        },
+        doneEdit(){
+                if(this.title.trim() == ''){ 
+                this.title = this.beforeEditCache
+            }
+            this.editing = false
+            this.$emit('finishedEdit', {
+                'index': this.index,
+                'todo' : {
+                    'id': this.id,
+                    'title': this.title,
+                    'completed': this.completed,
+                    'editing': this.editing,
+                }
+            }) 
+        },
+        cancelEdit(){   
+            this.title = this.beforeEditCache
+            this.editing = false 
+        },
     }
 }
 </script>
